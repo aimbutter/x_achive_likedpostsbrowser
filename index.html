@@ -32,7 +32,8 @@
         <div class="filter-bar">
             <input type="text" id="searchBox" class="search-box" placeholder="Search text, IDs, names, or handles..." oninput="handleSearchAndFilter()">
             <select id="sortOrder" class="filter-select" onchange="handleSearchAndFilter()">
-                <option value="newest" selected>Sort: Newest First (date posted)</option>
+                <option value="default" selected>Sort: Default (Archive Order)</option>
+                <option value="newest">Sort: Newest First (date posted)</option>
                 <option value="oldest">Sort: Oldest First (date posted)</option>
             </select>
             <span id="itemCountDisplay" class="item-count-badge">0 items found</span>
