@@ -487,10 +487,10 @@ function renderContent(tweetId, t) {
                 video.preload = "metadata";
                 video.playsInline = true;
                 
-                // Primary Stream: Direct proxy via FixTweet media CDN (bypasses Origin/CORS checks)
-                video.src = `https://d.fixupx.com/i/status/${tweetId}`;
+                // Primary Stream: Direct VxTwitter video proxy
+                video.src = `https://d.vxtwitter.com/i/status/${tweetId}`;
 
-                // Fallback 1: Raw media URL with CORS proxy if FixTweet direct stream fails
+                // Fallback: Opens/streams via VxTwitter mirror if browser blocks playback
                 video.onerror = () => {
                     if (!video.dataset.retried) {
                         video.dataset.retried = "true";
@@ -498,7 +498,7 @@ function renderContent(tweetId, t) {
                     } else {
                         const errDiv = document.createElement('div');
                         errDiv.className = "fetch-warning";
-                        errDiv.innerHTML = `⚠️ Video stream blocked. <a href="https://fixupx.com/i/status/${tweetId}" target="_blank" style="color:var(--accent);font-weight:bold;">Watch or download on FixUpX ↗</a>`;
+                        errDiv.innerHTML = `⚠️ Video stream blocked by browser. <a href="https://vxtwitter.com/i/status/${tweetId}" target="_blank" style="color:var(--accent);font-weight:bold;">Watch or download on VxTwitter ↗</a>`;
                         mediaBox.appendChild(errDiv);
                         video.remove();
                     }
