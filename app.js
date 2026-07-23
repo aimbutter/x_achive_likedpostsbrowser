@@ -218,11 +218,12 @@ function handleSearchAndFilter() {
         return true;
     });
 
-    filteredLikes.sort((a, b) => {
-        const timeA = getTweetTimestamp(a.like.tweetId);
-        const timeB = getTweetTimestamp(b.like.tweetId);
-        return sortOrder === 'oldest' ? timeA - timeB : timeB - timeA;
-    });
+    // Apply Sorting (default preserves raw like.js array order)
+    if (sortOrder === 'newest') {
+        filteredLikes.sort((a, b) => getTweetTimestamp(b.like.tweetId) - getTweetTimestamp(a.like.tweetId));
+    } else if (sortOrder === 'oldest') {
+        filteredLikes.sort((a, b) => getTweetTimestamp(a.like.tweetId) - getTweetTimestamp(b.like.tweetId));
+    }
 
     currentPage = 1;
     renderPage();
@@ -487,7 +488,6 @@ function renderContent(tweetId, t) {
                 video.preload = "metadata";
                 video.playsInline = true;
                 
-                // Directly set referrerpolicy and video src on the <video> element itself
                 video.referrerPolicy = "no-referrer";
                 video.setAttribute("referrerpolicy", "no-referrer");
                 video.src = m.url;
@@ -514,7 +514,7 @@ function changePage(direction) {
 
 function formatTextWithLinks(text) {
     const safeText = escapeHtml(text);
-    return safeText.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="tco-link">$1</a>');
+    return safeText.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noreferrer noopener" class="tco-link">$1</a>');
 }
 
 function escapeHtml(str) {
