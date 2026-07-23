@@ -153,8 +153,8 @@ function showWorkspaceUI() {
 
 function clearLoadedArchive() {
     if (confirm("Clear your saved archive and all cached tweet data from this browser? You will need to drop your like.js file again next time.")) {
-        localStorage.removeItem(rawDataKey); // Clears like.js data
-        localStorage.removeItem(cacheKey);  // Clears VxTwitter media/username cache
+        localStorage.removeItem(rawDataKey);
+        localStorage.removeItem(cacheKey);
         location.reload();
     }
 }
@@ -488,11 +488,23 @@ function renderContent(tweetId, t) {
                 video.playsInline = true;
                 video.referrerPolicy = "no-referrer";
                 
-                const source = document.createElement('source');
-                source.src = m.url;
-                source.type = "video/mp4";
-                
-                video.appendChild(source);
+                // Directly set src on video element to strictly enforce no-referrer
+                video.src = m.url;
+
+                // Fallback stream listener if CDN blocks standard connection
+                video.onerror = () => {
+                    if (!video.dataset.retried) {
+                        video.dataset.retried = "true";
+                        video.src = `https://corsproxy.io/?${encodeURIComponent(m.url)}`;
+                    } else {
+                        const errDiv = document.createElement('div');
+                        errDiv.className = "fetch-warning";
+                        errDiv.innerHTML = `⚠️ Video stream blocked by CDN. <a href="${m.url}" target="_blank" style="color:var(--accent);font-weight:bold;">Click here to open/download MP4 directly ↗</a>`;
+                        mediaBox.appendChild(errDiv);
+                        video.remove();
+                    }
+                };
+
                 mediaBox.appendChild(video);
             }
         });
