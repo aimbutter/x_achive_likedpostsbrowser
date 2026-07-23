@@ -329,7 +329,7 @@ async function renderPage() {
             
             <div class="tweet-meta">
                 <span id="date-${tweetId}">${localDateStr}</span>
-                <a class="launch-link" href="${originalUrl}" target="_blank">Open Live Post ↗</a>
+                <a class="launch-link" href="${originalUrl}" target="_blank" rel="noreferrer noopener">Open Live Post ↗</a>
             </div>
         `;
         listContainer.appendChild(card);
@@ -495,7 +495,7 @@ function renderContent(tweetId, t) {
                 video.onerror = () => {
                     const errDiv = document.createElement('div');
                     errDiv.className = "fetch-warning";
-                    errDiv.innerHTML = `⚠️ Video stream blocked or deleted. Try pressing 🔄 <strong>Reload</strong> above or <a href="${m.url}" target="_blank" style="color:var(--accent);font-weight:bold;">Open Direct MP4 ↗</a>`;
+                    errDiv.innerHTML = `⚠️ Video stream blocked or deleted. Try pressing 🔄 <strong>Reload</strong> above or <a href="${m.url}" target="_blank" rel="noreferrer noopener" style="color:var(--accent);font-weight:bold;">Open Direct MP4 ↗</a>`;
                     mediaBox.appendChild(errDiv);
                     video.remove();
                 };
