@@ -486,12 +486,11 @@ function renderContent(tweetId, t) {
                 video.controls = true;
                 video.preload = "metadata";
                 video.playsInline = true;
-                video.referrerPolicy = "no-referrer";
                 
-                // Directly set src on video element to strictly enforce no-referrer
-                video.src = m.url;
+                // Primary Stream: Direct proxy via FixTweet media CDN (bypasses Origin/CORS checks)
+                video.src = `https://d.fixupx.com/i/status/${tweetId}`;
 
-                // Fallback stream listener if CDN blocks standard connection
+                // Fallback 1: Raw media URL with CORS proxy if FixTweet direct stream fails
                 video.onerror = () => {
                     if (!video.dataset.retried) {
                         video.dataset.retried = "true";
@@ -499,7 +498,7 @@ function renderContent(tweetId, t) {
                     } else {
                         const errDiv = document.createElement('div');
                         errDiv.className = "fetch-warning";
-                        errDiv.innerHTML = `⚠️ Video stream blocked by CDN. <a href="${m.url}" target="_blank" style="color:var(--accent);font-weight:bold;">Click here to open/download MP4 directly ↗</a>`;
+                        errDiv.innerHTML = `⚠️ Video stream blocked. <a href="https://fixupx.com/i/status/${tweetId}" target="_blank" style="color:var(--accent);font-weight:bold;">Watch or download on FixUpX ↗</a>`;
                         mediaBox.appendChild(errDiv);
                         video.remove();
                     }
