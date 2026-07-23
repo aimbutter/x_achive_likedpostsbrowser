@@ -453,7 +453,7 @@ async function fetchDataSafely(tweetId) {
 
 function renderContent(tweetId, t) {
     const headerEl = document.getElementById(`header-${tweetId}`);
-    if (!headerEl) return; 
+    if(!headerEl) return; 
 
     headerEl.innerHTML = `
         <div class="profile-pic" style="background-color: var(--accent); display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:14px; color:white;">
@@ -473,30 +473,36 @@ function renderContent(tweetId, t) {
         mediaBox.className = "media-container";
         mediaBox.innerHTML = '';
 
-        let hasVideo = t.media.all.some(m => m.type === 'video' || m.type === 'gif');
+        t.media.all.forEach(m => {
+            if (m.type === 'photo' || m.type === 'image') {
+                const img = document.createElement('img');
+                img.src = m.url;
+                img.alt = "Post Image";
+                img.referrerPolicy = "no-referrer";
+                img.loading = "lazy";
+                mediaBox.appendChild(img);
+            } else if (m.type === 'video' || m.type === 'gif') {
+                const video = document.createElement('video');
+                video.controls = true;
+                video.preload = "metadata";
+                video.playsInline = true;
+                
+                // Directly set referrerpolicy and video src on the <video> element itself
+                video.referrerPolicy = "no-referrer";
+                video.setAttribute("referrerpolicy", "no-referrer");
+                video.src = m.url;
 
-        if (hasVideo) {
-            // Embed official Twitter embed player (bypasses Vercel Origin/CORS blocks)
-            const iframe = document.createElement('iframe');
-            iframe.src = `https://platform.twitter.com/embed/Tweet.html?id=${tweetId}&theme=dark&dnt=true`;
-            iframe.style.width = '100%';
-            iframe.style.height = '480px';
-            iframe.style.border = 'none';
-            iframe.style.borderRadius = '8px';
-            iframe.scrolling = 'no';
-            mediaBox.appendChild(iframe);
-        } else {
-            t.media.all.forEach(m => {
-                if (m.type === 'photo' || m.type === 'image') {
-                    const img = document.createElement('img');
-                    img.src = m.url;
-                    img.alt = "Post Image";
-                    img.referrerPolicy = "no-referrer";
-                    img.loading = "lazy";
-                    mediaBox.appendChild(img);
-                }
-            });
-        }
+                video.onerror = () => {
+                    const errDiv = document.createElement('div');
+                    errDiv.className = "fetch-warning";
+                    errDiv.innerHTML = `⚠️ Video stream blocked or deleted. Try pressing 🔄 <strong>Reload</strong> above or <a href="${m.url}" target="_blank" style="color:var(--accent);font-weight:bold;">Open Direct MP4 ↗</a>`;
+                    mediaBox.appendChild(errDiv);
+                    video.remove();
+                };
+
+                mediaBox.appendChild(video);
+            }
+        });
     }
 }
 
