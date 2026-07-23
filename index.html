@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Twitter Likes Media Archive Browser</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="navLeftContainer" class="edge-nav-container edge-nav-left" style="display:none;">
+    <div class="page-indicator-badge page-badge-text">1/1</div>
+    <button id="navLeft" class="edge-nav" onclick="changePage(-1)">&#10094;</button>
+</div>
+<div id="navRightContainer" class="edge-nav-container edge-nav-right" style="display:none;">
+    <div class="page-indicator-badge page-badge-text">1/1</div>
+    <button id="navRight" class="edge-nav" onclick="changePage(1)">&#10095;</button>
+</div>
+<div class="container">
+    <header>
+        <h1>Liked Post Browser</h1>
+        <p>2026/07/24 Version</p>
+    </header>
+
+    <div id="dropZone" class="upload-zone">
+        <p>Click or Drag & Drop your <strong>like.js</strong> file here</p>
+        <p class="sub-text">(Your file is saved privately in your local browser storage)</p>
+        <input type="file" id="fileInput" accept=".js" onchange="handleFile(this.files)">
+    </div>
+
+    <div id="workspace" style="display: none;">
+        <div class="filter-bar">
+            <input type="text" id="searchBox" class="search-box" placeholder="Search text, IDs, names, or handles..." oninput="handleSearchAndFilter()">
+            <select id="sortOrder" class="filter-select" onchange="handleSearchAndFilter()">
+                <option value="newest" selected>Sort: Newest First</option>
+                <option value="oldest">Sort: Oldest First</option>
+            </select>
+            <span id="itemCountDisplay" class="item-count-badge">0 items found</span>
+            <button id="indexBtn" class="filter-btn index-btn" onclick="toggleIndexer()">Pre-load usernames for searching?</button>
+            <button class="filter-btn reset-btn" onclick="clearLoadedArchive()">🔄 Clear cache saved archive</button>
+        </div>
+        <div class="multi-filter-container">
+            <span class="filter-label">Filters:</span>
+            <label class="filter-chip">
+                <input type="checkbox" value="hideSuspended" class="filter-checkbox" checked onchange="handleSearchAndFilter()">Hide Suspended
+            </label>
+            <label class="filter-chip">
+                <input type="checkbox" value="hideProtected" class="filter-checkbox" onchange="handleSearchAndFilter()">Hide Protected
+            </label>
+            <label class="filter-chip">
+                <input type="checkbox" value="noText" class="filter-checkbox" onchange="handleSearchAndFilter()">Without Text
+            </label>
+            <label class="filter-chip">
+                <input type="checkbox" value="hasMedia" class="filter-checkbox" onchange="handleSearchAndFilter()">Has Media
+            </label>
+            <label class="filter-chip">
+                <input type="checkbox" value="noMedia" class="filter-checkbox" onchange="handleSearchAndFilter()">Without Media
+            </label>
+            <label class="filter-chip">
+                <input type="checkbox" value="onlyProtected" class="filter-checkbox" onchange="handleSearchAndFilter()"> Only Protected
+            </label>
+        </div>
+        <div id="likesList" class="likes-list"></div>
+        <div class="bottom-spacer"></div>
+    </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
